@@ -1,9 +1,42 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { AuthContext } from '../providers/AuthProvider'
+import axios from 'axios'
 
 const AddJob = () => {
   const [startDate, setStartDate] = useState(new Date())
+  const { user } = useContext(AuthContext);
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const from = e.target;
+    const employeInfo = {
+      email: user?.email,
+      name: user?.displayName,
+      photo: user?.photoURL
+    };
+    const job_title = from.job_title.value;
+    const deadline = startDate;
+    const category = from.category.value;
+    const minPrice = from.min.value;
+    const maxPrice = from.max.value;
+    const job_description = from.description.value;
+
+    const fromData = { job_title, deadline, category, minPrice, maxPrice, job_description, employeInfo, bids: 0};
+    
+    // API call to add job to database
+    
+    const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/add-job`, fromData);
+    if (data.insertedId) {
+      alert("Your Post was successfully")
+    }
+    
+    
+  }
+  
+
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
@@ -12,13 +45,14 @@ const AddJob = () => {
           Post a Job
         </h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className='grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2'>
             <div>
               <label className='text-gray-700 ' htmlFor='job_title'>
                 Job Title
               </label>
               <input
+              required
                 id='job_title'
                 name='job_title'
                 type='text'
@@ -31,9 +65,11 @@ const AddJob = () => {
                 Email Address
               </label>
               <input
+              required
                 id='emailAddress'
                 type='email'
-                name='email'
+                defaultValue={user?.email}
+                disabled={true}
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               />
             </div>
@@ -67,8 +103,9 @@ const AddJob = () => {
                 Minimum Price
               </label>
               <input
+              required
                 id='min_price'
-                name='min_price'
+                name='min'
                 type='number'
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               />
@@ -79,8 +116,9 @@ const AddJob = () => {
                 Maximum Price
               </label>
               <input
+              required
                 id='max_price'
-                name='max_price'
+                name='max'
                 type='number'
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               />
@@ -94,11 +132,12 @@ const AddJob = () => {
               className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               name='description'
               id='description'
+              required
             ></textarea>
           </div>
           <div className='flex justify-end mt-6'>
             <button className='disabled:cursor-not-allowed px-8 py-2.5 leading-5 text-white transition-colors duration-300 transhtmlForm bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600'>
-              Save
+              Post Job
             </button>
           </div>
         </form>
