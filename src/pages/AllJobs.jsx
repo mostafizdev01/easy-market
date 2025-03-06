@@ -15,7 +15,7 @@ const AllJobs = () => {
 
   const fetchAllJobs = async ()=> {
       const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/jobs`);
-      console.log(data);
+      // console.log(data);
       setAllJobs(data);
   }
 
@@ -65,14 +65,9 @@ const AllJobs = () => {
           <button className='btn'>Reset</button>
         </div>
         <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-          <JobCard />
-          <JobCard />
-          <JobCard />
-          <JobCard />
-          <JobCard />
-          <JobCard />
-          <JobCard />
-          <JobCard />
+          {allJobs?.map((job, index) => (
+            <JobCard key={index} job={job} />
+          ))}
         </div>
       </div>
     </div>
