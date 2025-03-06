@@ -1,6 +1,23 @@
 import { Link } from 'react-router-dom'
-
+import { useContext, useEffect, useState } from 'react'
+import axios, { all } from 'axios';
+import { AuthContext } from '../providers/AuthProvider'
 const MyPostedJobs = () => {
+
+  const [allPost, setAllPost] = useState([]);
+  console.log(allPost);
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    fetchAllPost();
+  }, [])
+
+  const fetchAllPost = async () => {
+    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/my-post?email=${user?.email}`);
+    console.log(data);
+    setAllPost(data);
+  }
+
   return (
     <section className='container px-4 mx-auto pt-12'>
       <div className='flex items-center gap-x-3'>

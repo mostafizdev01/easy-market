@@ -12,7 +12,7 @@ const JobDetails = () => {
   const { id } = useParams();
   const [job, setJob] = useState({});
   const  { user } = useContext(AuthContext);
-  
+
   
   const { _id, job_title, job_description, deadline, maxPrice, minPrice, category, bids, employeInfo } = job;
 
@@ -38,16 +38,20 @@ const JobDetails = () => {
     
     const bidInfo = {
       price,
+      name: user?.displayName,
       email: user?.email,
+      photo: user?.photoURL,
       comment,
-      deadline: startDate
+      deadline: startDate,
+      jobId: _id
     }
 
     /// post the data in the database 
     
     const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/bid-job`, bidInfo);
-    if (data) {
-      alert("Your bids was successfully")
+    if (data.insertedId) {
+      from.reset();
+      alert('Your bid has been submitted successfully');
     }
     
   }
