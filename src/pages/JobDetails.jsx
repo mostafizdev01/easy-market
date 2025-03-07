@@ -37,6 +37,11 @@ const JobDetails = () => {
     // const deadline = from.startDate;
     
     const bidInfo = {
+      job_title,
+      job_description,
+      category,
+      maxPrice,
+      minPrice,
       price,
       name: user?.displayName,
       email: user?.email,
