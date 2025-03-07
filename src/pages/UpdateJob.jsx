@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useParams } from 'react-router-dom'
 
 const UpdateJob = () => {
   const [startDate, setStartDate] = useState(new Date())
+  const {id} = useParams();
+  console.log(id);
+  
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
