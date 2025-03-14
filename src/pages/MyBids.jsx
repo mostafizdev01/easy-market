@@ -6,7 +6,6 @@ import { format } from "date-fns";
 const MyBids = () => {
 
   const [allBids, setAllBids] = useState([]);
-  console.log(allBids);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -16,6 +15,23 @@ const MyBids = () => {
   const fetchAllPost = async () => {
     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/my-bids/${user?.email}`);
     setAllBids(data);
+  }
+
+  /// change tha status for the jobs -------
+
+  const changeStatus = async (id, prevStatus, status) => {
+    console.log(id, prevStatus, status);
+    
+    if (prevStatus !== "In Progress") return console.log("Your Satatus is Wrong");
+    
+    try {
+      const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/bid-status-update/${id}`, { status });
+      console.log(data);
+      
+      fetchAllPost();
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   return (
@@ -115,6 +131,8 @@ const MyBids = () => {
                         </td>
                         <td className='px-4 py-4 text-sm whitespace-nowrap'>
                           <button
+                          onClick={() => changeStatus(bid._id, bid.status, "Completed")}
+                          disabled={bid.status !== "In Progress"}
                             title='Mark Complete'
                             className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none disabled:cursor-not-allowed'
                           >
@@ -135,7 +153,7 @@ const MyBids = () => {
                           </button>
                         </td>
                       </tr>
-                      ))
+                    ))
                   }
                 </tbody>
               </table>
