@@ -21,13 +21,13 @@ const MyBids = () => {
 
   const changeStatus = async (id, prevStatus, status) => {
     console.log(id, prevStatus, status);
-    
+
     if (prevStatus !== "In Progress") return console.log("Your Satatus is Wrong");
-    
+
     try {
       const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/bid-status-update/${id}`, { status });
       console.log(data);
-      
+
       fetchAllPost();
     } catch (error) {
       console.error(error.message);
@@ -121,18 +121,18 @@ const MyBids = () => {
                         </td>
                         <td className='px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap'>
                           <div
-                            className={`inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-yellow-100/60 text-yellow-500`}
+                            className={`inline-flex items-center px-3 py-1 rounded-full gap-x-2 ${bid.status === "pending" ? "text-blue-500 bg-blue-100" : ""} ${bid.status === "Completed" ? "text-green-400 bg-green-50" : ""} ${bid.status === "Rejected" ? "text-red-500 bg-red-100" : ""} ${bid.status === "In Progress" ? "text-fuchsia-500 bg-fuchsia-100" : ""}`}
                           >
                             <span
-                              className={`h-1.5 w-1.5 rounded-full bg-yellow-500 `}
+                              className={`h-1.5 w-1.5 rounded-full ${bid.status === "pending" ? "text-blue-500 bg-blue-500" : ""} ${bid.status === "Completed" ? "text-green-400 bg-green-400" : ""} ${bid.status === "Rejected" ? "text-red-500 bg-red-500" : ""} ${bid.status === "In Progress" ? "text-fuchsia-500 bg-fuchsia-500" : ""}`}
                             ></span>
                             <h2 className='text-sm font-normal '>{bid.status}</h2>
                           </div>
                         </td>
                         <td className='px-4 py-4 text-sm whitespace-nowrap'>
                           <button
-                          onClick={() => changeStatus(bid._id, bid.status, "Completed")}
-                          disabled={bid.status !== "In Progress"}
+                            onClick={() => changeStatus(bid._id, bid.status, "Completed")}
+                            disabled={bid.status !== "In Progress"}
                             title='Mark Complete'
                             className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none disabled:cursor-not-allowed'
                           >
