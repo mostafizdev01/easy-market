@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { Link } from 'react-router-dom'
 
 const JobCard = ({job}) => {
-  console.log(job);
+  // console.log(job);
   
   const { _id, job_title, job_description, deadline, maxPrice, minPrice, category, bids } = job;
 
@@ -31,7 +31,7 @@ const JobCard = ({job}) => {
         </h1>
 
         <p className='mt-2 text-sm text-gray-600 '>
-          {job_description.slice(0, 100)}...
+          {job_description?.slice(0, 100)}...
         </p>
         <p className='mt-2 text-sm font-bold text-gray-600 '>
           Range: ${minPrice} - ${maxPrice}

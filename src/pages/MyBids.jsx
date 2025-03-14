@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
+import { format } from "date-fns";
 
 const MyBids = () => {
 
@@ -13,7 +14,7 @@ const MyBids = () => {
   }, [])
 
   const fetchAllPost = async () => {
-    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/my-bids?email=${user?.email}`);
+    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/my-bids/${user?.email}`);
     setAllBids(data);
   }
 
@@ -87,7 +88,7 @@ const MyBids = () => {
                         </td>
 
                         <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                          28/05/2024
+                          {format(new Date(bid.deadline), "dd/MM/yyyy")}
                         </td>
 
                         <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>

@@ -6,7 +6,7 @@ import axios, { all } from 'axios';
 const AllJobs = () => {
 
   const [ allJobs, setAllJobs] = useState([]);
-  console.log(allJobs);
+  // console.log(allJobs);
   
 
   useEffect(()=>{

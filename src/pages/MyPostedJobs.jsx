@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 import { AuthContext } from '../providers/AuthProvider'
 import toast, { Toaster } from 'react-hot-toast';
+import { format } from 'date-fns';
 const MyPostedJobs = () => {
 
   const [allPost, setAllPost] = useState([]);
@@ -122,7 +123,7 @@ const MyPostedJobs = () => {
                           </td>
 
                           <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                            28/05/2024
+                            {format(new Date(job.deadline), "dd/MM/yyyy")}
                           </td>
 
                           <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
@@ -138,7 +139,7 @@ const MyPostedJobs = () => {
                             </div>
                           </td>
                           <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                            {job.job_description.slice(0, 50)}...
+                            {job.job_description?.slice(0, 50)}...
                           </td>
                           <td className='px-4 py-4 text-sm whitespace-nowrap'>
                             <div className='flex items-center gap-x-6'>

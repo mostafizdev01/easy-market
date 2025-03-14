@@ -3,10 +3,11 @@ import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const UpdateJob = () => {
   const [startDate, setStartDate] = useState(new Date())
+  const navigate = useNavigate();
   
   const { id } = useParams();
 
@@ -50,17 +51,21 @@ const UpdateJob = () => {
       maxPrice,
       job_description,
     }
-    console.log(updateInfo);
+    // console.log(updateInfo);
 
     // / post the data in the database 
 
     const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/update-post/${id}`, updateInfo);
-    console.log(data);
+    // console.log(data);
 
-    // if (data) {
-    //   from.reset();
-    //   alert('Your bid has been submitted successfully');
-    // }
+    if (data.modifiedCount) {
+      from.reset();
+      alert('Your bid has been Updated successfully');
+      navigate(`/my-posted-jobs`);
+    }
+    if (!data.modifiedCount) {
+      alert('Your are not changed anything');
+    }
 
   }
 
