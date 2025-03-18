@@ -3,11 +3,30 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../providers/AuthProvider'
 import axios from 'axios'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 const AddJob = () => {
   const [startDate, setStartDate] = useState(new Date())
   const { user } = useContext(AuthContext);
-  
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  //// post the data useing the useMutation from the transtact query 
+
+  const { isPending, mutateAsync } = useMutation({  /// nicher from data value gula mutateAsync er mordhe rakha hoise
+    mutationFn: async jobData => { /// mutateAsync er data gula jobData er mordhe rakha hoise
+      await axios.post(`${import.meta.env.VITE_API_URL}/add-job`, jobData); /// jobData post kortese and ekhane to call kortesi aita to bujha jaitese..
+    },
+    onSuccess: () => { // jodi data ta thik moto post hoi taile ata call hobe 
+      queryClient.invalidateQueries({queryKey: ['jobs']})  // mane ami joto new data add korsi sei gula tumi abar fetch kore niya aiso...
+      console.log("data saved") // refetch the data after successful mutation
+      navigate('/my-posted-jobs')
+    },
+    onError: () => { // jodi data ta thik moto post nai hoi taile ata call hobe
+      alert("Failed to post your job")
+    }
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,18 +43,22 @@ const AddJob = () => {
     const maxPrice = from.max.value;
     const job_description = from.description.value;
 
-    const fromData = { job_title, deadline, category, minPrice, maxPrice, job_description, employeInfo, bids: 0};
-    
+    const fromData = { job_title, deadline, category, minPrice, maxPrice, job_description, employeInfo, bids: 0 };
+
     // API call to add job to database
-    
-    const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/add-job`, fromData);
-    if (data.insertedId) {
-      alert("Your Post was successfully")
-    }
-    
-    
+
+    // const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/add-job`, fromData); ===>>> old job posting rules
+    // if (data.insertedId) {
+    //   alert("Your Post was successfully")
+    // }
+
+
+    // new job posting useing the transtract query  
+
+    mutateAsync(fromData); // new job posting rules
+
   }
-  
+
 
 
   return (
@@ -52,7 +75,7 @@ const AddJob = () => {
                 Job Title
               </label>
               <input
-              required
+                required
                 id='job_title'
                 name='job_title'
                 type='text'
@@ -65,7 +88,7 @@ const AddJob = () => {
                 Email Address
               </label>
               <input
-              required
+                required
                 id='emailAddress'
                 type='email'
                 defaultValue={user?.email}
@@ -103,7 +126,7 @@ const AddJob = () => {
                 Minimum Price
               </label>
               <input
-              required
+                required
                 id='min_price'
                 name='min'
                 type='number'
@@ -116,7 +139,7 @@ const AddJob = () => {
                 Maximum Price
               </label>
               <input
-              required
+                required
                 id='max_price'
                 name='max'
                 type='number'
@@ -137,7 +160,7 @@ const AddJob = () => {
           </div>
           <div className='flex justify-end mt-6'>
             <button className='disabled:cursor-not-allowed px-8 py-2.5 leading-5 text-white transition-colors duration-300 transhtmlForm bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600'>
-              Post Job
+              {isPending ? "Posting..." : "Post Job"}
             </button>
           </div>
         </form>
