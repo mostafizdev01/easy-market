@@ -2,9 +2,10 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import { format } from "date-fns";
+import useAxiosSecure from '../Hooks/useAxiosSecure';
 
 const MyBids = () => {
-
+  const axiosSecure = useAxiosSecure();
   const [allBids, setAllBids] = useState([]);
   const { user } = useContext(AuthContext);
 
@@ -13,7 +14,7 @@ const MyBids = () => {
   }, [])
 
   const fetchAllPost = async () => {
-    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/my-bids/${user?.email}`, { withCredentials: true});
+    const { data } = await axiosSecure.get(`/my-bids/${user?.email}`); /// main url er kaj ta axiosSecure er morhe kora hoise
     setAllBids(data);
   }
 
